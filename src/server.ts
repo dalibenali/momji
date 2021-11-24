@@ -1,29 +1,21 @@
 import http from "http";
-import express, { Application } from "express";
+import express from "express";
 import morgan from "morgan";
 import teamsRoutes from "./routes/teams";
 import cors from "./middlewares/cors";
+import notFound from "./middlewares/notFound";
 
 const router: express.Application = express();
 
 // Logging
 router.use(morgan("dev"));
 
-// Parse the request data
+// Middlewares
 router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 router.use(cors);
-
-// Routes
 router.use("/", teamsRoutes);
-
-// Error handling
-router.use((req, res, next) => {
-  const error: Error = new Error("not found");
-  return res.status(404).json({
-    message: error.message,
-  });
-});
+router.use(notFound);
 
 // Server
 const httpServer: http.Server = http.createServer(router);
