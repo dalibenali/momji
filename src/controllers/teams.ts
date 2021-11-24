@@ -15,4 +15,19 @@ const getTeams = async (req: Request, res: Response, next: NextFunction) => {
     }
   };
 
-export default { getTeams };
+  // getting team
+const getTeam = async (req: Request, res: Response, next: NextFunction) => {
+
+    let conn: any;
+    let id: string = req.params.id;
+    try {
+        let team: Team = await db.pool.query("SELECT * FROM teams where id ="+id);
+        res.status(200).json(team);
+    } catch (err) {
+        console.log("====================+>",err);
+    } finally {
+        if (conn) return conn.end();
+    }
+};
+
+export default { getTeams, getTeam };

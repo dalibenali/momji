@@ -3,7 +3,7 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import teamsRoutes from "./routes/teams";
 
-const router: Application = express();
+const router: express.Application = express();
 
 // Logging
 router.use(morgan("dev"));

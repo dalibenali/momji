@@ -9,3 +9,5 @@ build/**/*
 
 # ignore yarn.lock
 yarn.lock
+
+src/middlewares/.DS_Store
