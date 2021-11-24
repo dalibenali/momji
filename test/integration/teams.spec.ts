@@ -15,7 +15,7 @@ describe("Teams routes", ()=> {
     await db.pool.query("DELETE FROM teams");
   });
 
-  it("should return an array of teams with 200 status code", async ()=>  {
+  it("Should return an array of teams with 200 status code", async ()=>  {
     await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team1", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
     await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team2", "description2", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
 
@@ -29,7 +29,7 @@ describe("Teams routes", ()=> {
     res.body[0].should.have.property("updated_at");
   });
 
-  it("should return an array with one teams object and 200 status code", async ()=>  {
+  it("Should return an array with one teams object and 200 status code", async ()=>  {
     await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team3", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
     let team: [Team] = await db.pool.query("SELECT * FROM teams where name ='Team3'");
   
@@ -41,5 +41,15 @@ describe("Teams routes", ()=> {
     res.body[0].should.have.property("description");
     res.body[0].should.have.property("created_at");
     res.body[0].should.have.property("updated_at");
+  });
+
+  it("Should create new team and return 201 status code", async () => {
+    let team = {
+      "name": "Team4",
+	    "description": "taratata"
+    };
+
+    let result = await chai.request(router).post("/teams").send(team);
+    result.should.have.status(201);
   });
 });

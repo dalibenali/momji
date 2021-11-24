@@ -10,8 +10,8 @@ Create .env file in root directory like :
     DB_TEST_NAME=test
 
 
-Install packages : Run yarn install
+Install packages : yarn install
 
-Start server : Run yarn run dev
+Start server : yarn run dev
 
 Run the tests : yarn run test

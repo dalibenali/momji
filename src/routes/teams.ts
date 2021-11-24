@@ -6,5 +6,6 @@ const router: Router = express.Router();
 
 router.get("/teams", controller.getTeams);
 router.get("/teams/:id", reqParamsValidation, controller.getTeam);
+router.post("/teams", controller.addTeam);
 
 export = router;
