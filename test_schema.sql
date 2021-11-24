@@ -1,0 +1,10 @@
+-- schema of test database
+CREATE DATABASE IF NOT EXISTS test;
+
+CREATE TABLE teams(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
+)ENGINE = InnoDB;
