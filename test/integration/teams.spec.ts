@@ -81,7 +81,7 @@ describe("Teams routes", ()=> {
     result.should.have.status(200);
   });
 
-  it.only("Should not update team if not exist and return 200 status code", async () => {
+  it("Should not update team if not exist and return 200 status code", async () => {
     let result = await chai
       .request(router)
       .put("/teams/"+notFoundTeamId)
@@ -94,5 +94,17 @@ describe("Teams routes", ()=> {
     let res = await chai.request(router).put("/teams/"+malFormedTeamId).send(newTeam);
     res.should.have.status(400);
     res.body.message.should.equal("id must be a number");
+  });
+
+  it("Should delete one or manu teams by id and return 204 status code", async ()=>  {
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["TeamA", "description A", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["TeamB", "description B", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    
+    let teamA: [Team] = await db.pool.query("SELECT * FROM teams where name ='TeamA'");
+    let teamB: [Team] = await db.pool.query("SELECT * FROM teams where name ='TeamB'");
+    
+    let teamsIds: String = '"'+teamA[0].id+','+teamB[0].id+'"';
+    let res = await chai.request(router).delete("/teams?ids="+teamsIds).send();
+    res.should.have.status(204);
   });
 });

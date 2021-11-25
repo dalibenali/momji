@@ -49,7 +49,7 @@ const addTeam = async (req: Request, res: Response, next: NextFunction) => {
       }
   };
 
-  // updating a team
+// updating a team
 const updateTeam = async (req: Request, res: Response, next: NextFunction) => {
     
     let id: string = req.params.id;
@@ -69,4 +69,22 @@ const updateTeam = async (req: Request, res: Response, next: NextFunction) => {
       }
   };
 
-export default { getTeams, getTeam, addTeam, updateTeam };
+// deleting one or many teams
+const deleteOneOrMayTeam = async (req: Request, res: Response, next: NextFunction) => {
+    
+    let conn: any;
+      try {
+        let listTeamsIds: any = req.query.ids;
+        let listTeamsIdsToIterable = listTeamsIds.replace(/['"]+/g, '').split(',');
+        listTeamsIdsToIterable.forEach((element: any) => {
+            db.pool.query("DELETE FROM teams WHERE id = ?", [element]);
+        });
+        res.status(204).send();
+      } catch (err) {
+          console.log("====================+>",err);
+      } finally {
+          if (conn) return conn.end();
+      }
+  };
+
+export default { getTeams, getTeam, addTeam, updateTeam, deleteOneOrMayTeam };

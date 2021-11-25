@@ -8,5 +8,6 @@ router.get("/teams", controller.getTeams);
 router.get("/teams/:id", reqParamsValidation, controller.getTeam);
 router.post("/teams", controller.addTeam);
 router.put("/teams/:id", reqParamsValidation, controller.updateTeam);
+router.delete("/teams", controller.deleteOneOrMayTeam);
 
 export = router;
