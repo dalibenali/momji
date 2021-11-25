@@ -49,4 +49,24 @@ const addTeam = async (req: Request, res: Response, next: NextFunction) => {
       }
   };
 
-export default { getTeams, getTeam, addTeam };
+  // updating a team
+const updateTeam = async (req: Request, res: Response, next: NextFunction) => {
+    
+    let id: string = req.params.id;
+    let conn: any;
+      try {
+          let name: String = req.body.name;
+          let description: String = req.body.description;
+          let updated_at: Date = new Date;
+          let team: [Team] = await db.pool.query("UPDATE teams set name =?, description =?, updated_at =? WHERE id =?", [name, description, updated_at, id]);
+          
+          res.status(200).json(team);
+      } catch (err) {
+          console.log("====================+>",err);
+          // throw err;
+      } finally {
+          if (conn) return conn.end();
+      }
+  };
+
+export default { getTeams, getTeam, addTeam, updateTeam };

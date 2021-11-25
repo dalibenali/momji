@@ -10,7 +10,8 @@ chai.should();
 chai.use(chaiHttp);
 
 describe("Teams routes", ()=> {
-
+  
+  // clean database test after all tests
   afterEach(async ()=> {
     await db.pool.query("DELETE FROM teams");
   });
@@ -51,5 +52,19 @@ describe("Teams routes", ()=> {
 
     let result = await chai.request(router).post("/teams").send(team);
     result.should.have.status(201);
+  });
+
+  it("Should update team and return 200 status code", async () => {
+    let newTeam = {
+      name: 'Team5',
+      description: 'description5',
+    };
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team4", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    let team: [Team] = await db.pool.query("SELECT * FROM teams where name ='Team4'");
+    let result = await chai
+      .request(router)
+      .put("/teams/"+team[0].id)
+      .send(newTeam);
+    result.should.have.status(200);
   });
 });
