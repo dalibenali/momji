@@ -44,6 +44,13 @@ describe("Teams routes", ()=> {
     res.body[0].should.have.property("updated_at");
   });
 
+  it("Should return empty array with 200 status code if team not found", async ()=>  {
+    let notFoundTeamId = 999;  
+    let res = await chai.request(router).get("/teams/"+notFoundTeamId).send();
+    res.should.have.status(200);
+    res.body.should.be.an("array").length(0);
+  });
+
   it("Should create new team and return 201 status code", async () => {
     let team = {
       "name": "Team4",
