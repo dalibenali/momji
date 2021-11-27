@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Employee from "../models/Employee";
 import db from '../utils/db';
 import employeeProcess from "../services/employees.ts/employeeProcess";
+import Team from "models/Team";
 
 // getting all employees
 const getEmployees = async (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +12,7 @@ const getEmployees = async (req: Request, res: Response, next: NextFunction) => 
     try {
         let employees: [Employee] = await db.pool.query("SELECT * FROM employees");
         for (let employee of employees) { 
-            processEmployee = await employeeProcess(employee); // call 
+            processEmployee = await employeeProcess(employee); // call employeeProcess service
             processedEmployeesArray.push(processEmployee);
         };
         res.status(200).json(processedEmployeesArray);
@@ -54,7 +55,7 @@ const deleteEmployee = async (req: Request, res: Response, next: NextFunction) =
       }
 };
 
-// adding a employee
+// adding employee
 const addEmployee = async (req: Request, res: Response, next: NextFunction) => {
 
     let conn: any;
@@ -69,4 +70,27 @@ const addEmployee = async (req: Request, res: Response, next: NextFunction) => {
       }
 };
 
-export default { getEmployees, getEmployee, deleteEmployee, addEmployee };
+// update employee
+const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    let conn: any;
+    try {
+        // check if the employee exists
+        let employee: [Employee] = await db.pool.query("SELECT * FROM employees where id ="+req.params.id);
+        if (!employee.length) return res.status(404).json('employee not found');
+
+        // check if the team_id belongs to an existing team
+        let team: [Team] = await db.pool.query("SELECT * FROM teams where id ="+req.body.team_id);
+        if (!team.length) return res.status(404).json('team not found');
+        
+        // update our employee
+        await db.pool.query("UPDATE employees set firstName =?, lastName =?, email =?, address =?, team_id =?, updated_at =? WHERE id =?", [req.body.firstName, req.body.lastName, req.body.email, req.body.address, req.body.team_id, new Date, employee[0].id]);
+        res.status(200).json("Employee updated successfully");
+    } catch (err) {
+        console.log("====================+>",err);
+        res.status(400).json("Bad request");
+    } finally {
+        if (conn) return conn.end();
+    }
+};
+
+export default { getEmployees, getEmployee, deleteEmployee, addEmployee, updateEmployee };

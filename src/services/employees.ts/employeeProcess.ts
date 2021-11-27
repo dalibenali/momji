@@ -2,8 +2,8 @@ import Team from "models/Team";
 import Employee from "models/Employee";
 import db from "../../utils/db";
 
-// processing of an employee to have a model corresponding to the http 
-// response cited in the specifications
+// processing of an employee to have a model corresponding
+// to the http response cited in the specifications
 let processEmployee = async (employee: Employee): Promise<Array<Employee> | string> =>{
     try {
         let team: [Team] = await db.pool.query("SELECT id, name, description, created_at, updated_at FROM teams where id =?", [employee.team_id]);

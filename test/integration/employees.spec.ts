@@ -25,8 +25,8 @@ describe("Employees routes", ()=> {
 
   it("Should return an array of employees with 200 status code", async ()=>  {
     // create 2 teams
-    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team1", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"])
-    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team2", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"])
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team1", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team2", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
     // get our 2 teams
     let team1: [Team] = await db.pool.query("SELECT * FROM teams where name ='Team1'");
     let team2: [Team] = await db.pool.query("SELECT * FROM teams where name ='Team2'");
@@ -110,6 +110,37 @@ describe("Employees routes", ()=> {
     let result = await chai.request(router).post("/employees").send(employee);
     result.should.have.status(201);
     result.body.should.equal("Employee created successfully");
+  });
+
+  it("Should update employee and return 200 status code", async () => {
+    
+    // create team1 and team2
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team1", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team2", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    
+    // get team1 and team2
+    let recalledTeam1: [Team] = await db.pool.query("SELECT id FROM teams where name ='Team1'");
+    let recalledTeam2: [Team] = await db.pool.query("SELECT id FROM teams where name ='Team2'");
+
+    // create our employee assign them to team1
+    await db.pool.query("INSERT INTO employees (firstName, lastName, email, address, registered, isActive, team_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", ["Alex" , "legrand", "legrand@yahoo.com", "2300 Witmer Rd, Niagara Falls, NY 14305, États-Unis", "2018-04-17 04:59:45", false, recalledTeam1[0].id, "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+
+    // new employee to send 
+    let newEmployee = {
+      "firstName": "dali",
+      "lastName": "ben ali",
+      "email": "aloulou@yahoo.com",
+      "address": "oijhoiuoiuoiuoiu",
+      "team_id": recalledTeam2[0].id
+    };
+  
+  // get our employee
+  let employee: [Employee] = await db.pool.query("SELECT id FROM employees where team_id ="+recalledTeam1[0].id);
+
+  // call employee endpoint with put method
+  let res = await chai.request(router).put("/employees/"+employee[0].id).send(newEmployee);
+  res.should.have.status(200);
+  res.body.should.equal("Employee updated successfully");
   });
 
 });
