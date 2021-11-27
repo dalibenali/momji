@@ -21,7 +21,7 @@ const getEmployees = async (req: Request, res: Response, next: NextFunction) => 
     } finally {
         if (conn) return conn.end();
     }
-  };
+};
 // getting employee
 const getEmployee = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -52,6 +52,21 @@ const deleteEmployee = async (req: Request, res: Response, next: NextFunction) =
       } finally {
           if (conn) return conn.end();
       }
-  };
+};
 
-export default { getEmployees, getEmployee, deleteEmployee };
+// adding a employee
+const addEmployee = async (req: Request, res: Response, next: NextFunction) => {
+
+    let conn: any;
+      try {
+          await db.pool.query("INSERT INTO employees (firstName, lastName, email, address, registered, isActive, team_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [req.body.firstName , req.body.lastName, req.body.email, req.body.address, new Date, false, req.body.team_id, new Date, new Date]);
+          res.status(201).json("Employee created successfully");
+      } catch (err) {
+          console.log("====================+>",err);
+          res.status(400).json("Bad request");
+      } finally {
+          if (conn) return conn.end();
+      }
+};
+
+export default { getEmployees, getEmployee, deleteEmployee, addEmployee };
