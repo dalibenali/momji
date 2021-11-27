@@ -21,8 +21,9 @@ const getTeam = async (req: Request, res: Response, next: NextFunction) => {
     let conn: any;
     let id: string = req.params.id;
     try {
-        let team: Team = await db.pool.query("SELECT * FROM teams where id ="+id);
-        res.status(200).json(team);
+        let team: [Team] = await db.pool.query("SELECT * FROM teams where id ="+id);
+        if (!team.length) return res.status(404).json('team not found');
+        res.status(200).json(team[0]);
     } catch (err) {
         console.log("====================+>",err);
     } finally {

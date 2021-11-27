@@ -5,6 +5,7 @@ import router from '../../src/server';
 import db from '../../src/utils/db';
 import chai from "chai";
 import Team from 'models/Team';
+import Employee from 'models/Employee';
 
 chai.should();
 chai.use(chaiHttp);
@@ -53,6 +54,25 @@ describe("Employees routes", ()=> {
     res.body[0].team.should.have.property("updated_at");
     res.body[0].should.have.property("created_at");
     res.body[0].should.have.property("updated_at");
+  });
+
+  it("Should return employee object and 200 status code", async ()=>  {
+    // create our team 
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["TeamShape", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    // get our team
+    let team: [Team] = await db.pool.query("SELECT * FROM teams where name ='TeamShape'");
+
+    // create an employee and assign it to our team
+    await db.pool.query("INSERT INTO employees (firstName, lastName, email, address, registered, isActive, team_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", ["Alfred", "mackbill", "alimackbill@yahoo.com", "14 avenue bob leponge, Mars", "2019-03-10 02:55:05", false, team[0].id,  "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    // get our employee
+    let employee: [Employee] = await db.pool.query("SELECT * FROM employees where firstName ='Alfred'");
+
+    // call employee endpoint
+    let res = await chai.request(router).get("/employees/"+employee[0].id).send();
+    res.should.have.status(200);
+    res.body.should.be.an("object");
+    res.body.should.have.property("id");
+    res.body.id.should.equal(employee[0].id);
   });
 
 });

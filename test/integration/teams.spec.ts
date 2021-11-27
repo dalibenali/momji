@@ -35,24 +35,24 @@ describe("Teams routes", ()=> {
     res.body[0].should.have.property("updated_at");
   });
 
-  it("Should return an array with one teams object and 200 status code", async ()=>  {
+  it("Should return team object with 200 status code", async ()=>  {
     await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["Team3", "description1", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
     let team: [Team] = await db.pool.query("SELECT * FROM teams where name ='Team3'");
   
     let res = await chai.request(router).get("/teams/"+team[0].id).send();
     res.should.have.status(200);
-    res.body.should.be.an("array").length(1);
-    res.body[0].should.have.property("id");
-    res.body[0].should.have.property("name");
-    res.body[0].should.have.property("description");
-    res.body[0].should.have.property("created_at");
-    res.body[0].should.have.property("updated_at");
+    res.body.should.be.an("object");
+    res.body.should.have.property("id");
+    res.body.should.have.property("name");
+    res.body.should.have.property("description");
+    res.body.should.have.property("created_at");
+    res.body.should.have.property("updated_at");
   });
 
-  it("Should return empty array with 200 status code if team not found", async ()=>  {
+  it("Should return 404 status code if team not found", async ()=>  {
     let res = await chai.request(router).get("/teams/"+notFoundTeamId).send();
-    res.should.have.status(200);
-    res.body.should.be.an("array").length(0);
+    res.should.have.status(404);
+    res.body.should.equal("team not found");
   });
   
   it("Should not return team if mal formed id params and return 400 status code", async ()=>  {

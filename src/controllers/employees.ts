@@ -22,6 +22,22 @@ const getEmployees = async (req: Request, res: Response, next: NextFunction) => 
         if (conn) return conn.end();
     }
   };
+// getting employee
+const getEmployee = async (req: Request, res: Response, next: NextFunction) => {
+
+    let conn: any;
+    let id: string = req.params.id;
+    try {
+        let employee: [Employee] = await db.pool.query("SELECT * FROM employees where id ="+id);
+        if (!employee.length) return res.status(404).json('employee not found');
+        let processedEmployee = await employeeProcess(employee[0]); 
+        res.status(200).json(processedEmployee);
+    } catch (err) {
+        console.log("====================+>",err);
+    } finally {
+        if (conn) return conn.end();
+    }
+};
 
 
-export default { getEmployees };
+export default { getEmployees, getEmployee };
