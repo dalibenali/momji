@@ -11,17 +11,13 @@ let processEmployee = async (employee: Employee): Promise<Array<Employee> | stri
         newEmployee.id = employee.id
         newEmployee.profile = {};
         newEmployee.profile.firstName = employee.firstName;
-        newEmployee.profile.lastName = employee.firstName;
+        newEmployee.profile.lastName = employee.lastName;
         newEmployee.email = employee.email;
         newEmployee.address = employee.address;
         newEmployee.registered = employee.registered;
         newEmployee.isActive = employee.isActive;
         newEmployee.team = {};
-        newEmployee.team.id = team[0].id;
-        newEmployee.team.name = team[0].name;
-        newEmployee.team.description = team[0].description;
-        newEmployee.team.created_at = team[0].created_at;
-        newEmployee.team.updated_at = team[0].updated_at;
+        Object.assign(newEmployee.team,team[0]);
         newEmployee.created_at = employee.isActive;
         newEmployee.updated_at = employee.updated_at;
         return newEmployee;

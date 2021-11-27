@@ -92,7 +92,7 @@ describe("Employees routes", ()=> {
     res.should.have.status(204);
   });
 
-  it.only("Should create employee and return 201 status code", async () => {
+  it("Should create employee and return 201 status code", async () => {
     // create new team
     await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["TeamZZ", "description A", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
     // get our team
