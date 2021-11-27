@@ -5,5 +5,6 @@ import controller from "../controllers/employees";
 let router: Router = express.Router();
 router.get("/employees", controller.getEmployees);
 router.get("/employees/:id", reqParamsValidation, controller.getEmployee);
+router.delete("/employees/:id", reqParamsValidation, controller.deleteEmployee);
 
 export = router;

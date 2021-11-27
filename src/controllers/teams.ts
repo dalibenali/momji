@@ -77,8 +77,8 @@ const deleteOneOrMayTeam = async (req: Request, res: Response, next: NextFunctio
       try {
         let listTeamsIds: any = req.query.ids;
         let listTeamsIdsToIterable = listTeamsIds.replace(/['"]+/g, '').split(',');
-        listTeamsIdsToIterable.forEach((id: any) => {
-            db.pool.query("DELETE FROM teams WHERE id = ?", [id]);
+        listTeamsIdsToIterable.forEach(async (id: any) => {
+            await db.pool.query("DELETE FROM teams WHERE id = ?", [id]);
         });
         res.status(204).send();
       } catch (err) {

@@ -39,5 +39,19 @@ const getEmployee = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+// deleting employee
+const deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    
+    let conn: any;
+      try {
+        let employeeId: any = req.params.id;
+        await db.pool.query("DELETE FROM employees WHERE id = ?", [employeeId]);
+        res.status(204).send();
+      } catch (err) {
+          console.log("====================+>",err);
+      } finally {
+          if (conn) return conn.end();
+      }
+  };
 
-export default { getEmployees, getEmployee };
+export default { getEmployees, getEmployee, deleteEmployee };

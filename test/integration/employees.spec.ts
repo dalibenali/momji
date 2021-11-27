@@ -20,6 +20,7 @@ describe("Employees routes", ()=> {
   // clean database test after all tests
   beforeEach(async ()=> {
     await db.pool.query("DELETE FROM employees");
+    await db.pool.query("DELETE FROM teams");
   });
 
   it("Should return an array of employees with 200 status code", async ()=>  {
@@ -73,6 +74,20 @@ describe("Employees routes", ()=> {
     res.body.should.be.an("object");
     res.body.should.have.property("id");
     res.body.id.should.equal(employee[0].id);
+  });
+
+  it("Should delete employee and return 204 status code", async ()=>  {
+    // create new team
+    await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", ["TeamPP", "description A", "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    let team: [Team] = await db.pool.query("SELECT * FROM teams where name ='TeamPP'");
+    
+    // create new employee
+    await db.pool.query("INSERT INTO employees (firstName, lastName, email, address, registered, isActive, team_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", ["Alex" , "legrand", "legrand@yahoo.com", "2300 Witmer Rd, Niagara Falls, NY 14305, États-Unis", "2018-04-17 04:59:45", false, team[0].id, "2019-03-10 02:55:05", "2019-06-10 00:55:05"]);
+    let employee: [Employee] = await db.pool.query("SELECT id FROM employees where email = 'legrand@yahoo.com'");
+    
+    // call employees endpoint
+    let res = await chai.request(router).delete("/employees/"+employee[0].id).send();
+    res.should.have.status(204);
   });
 
 });

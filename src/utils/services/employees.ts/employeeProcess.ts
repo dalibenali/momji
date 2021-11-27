@@ -1,6 +1,7 @@
 import Team from "models/Team";
 import Employee from "models/Employee";
 import db from "../../db";
+
 // processing of an employee to have a model corresponding to the http 
 // response cited in the specifications
 let processEmployee = async (employee: Employee): Promise<Array<Employee> | string> =>{
