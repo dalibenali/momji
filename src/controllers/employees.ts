@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Employee from "../models/Employee";
 import db from '../utils/db';
-import employeeProcess from "../utils/services/employees.ts/employeeProcess";
+import employeeProcess from "../services/employees.ts/employeeProcess";
 
 // getting all employees
 const getEmployees = async (req: Request, res: Response, next: NextFunction) => {
