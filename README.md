@@ -15,3 +15,5 @@ Install packages : yarn install
 Start server : yarn run dev
 
 Run the tests : yarn run test
+
+Build app : yarn run build

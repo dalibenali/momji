@@ -16,8 +16,8 @@ describe("Teams routes", ()=> {
     description: 'description5',
   };
   const malFormedTeamId = "1d";
-  // clean database test after all tests
-  afterEach(async ()=> {
+  // clean database test before all tests
+  beforeEach(async ()=> {
     await db.pool.query("DELETE FROM teams");
   });
 
