@@ -1,9 +1,9 @@
 process.env.NODE_ENV = 'test';
 
 import chaiHttp from 'chai-http';
+import chai from "chai";
 import router from '../../src/server';
 import db from '../../src/utils/db';
-import chai from "chai";
 import Team from 'models/Team';
 
 chai.should();
@@ -73,8 +73,8 @@ describe("Teams routes", ()=> {
 	    "description": "taratata"
     };
 
-    let result = await chai.request(router).post("/teams").send(team);
-    result.should.have.status(201);
+    let res = await chai.request(router).post("/teams").send(team);
+    res.should.have.status(201);
   });
 
   // add team, [POST:400]

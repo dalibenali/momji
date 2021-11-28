@@ -47,7 +47,7 @@ const deleteEmployee = async (req: Request, res: Response, next: NextFunction) =
       try {
         let employeeId: any = req.params.id;
         await db.pool.query("DELETE FROM employees WHERE id = ?", [employeeId]);
-        res.status(204).send();
+        res.status(200).json("Employee deleted");
       } catch (err) {
           console.log("====================+>",err);
       } finally {
