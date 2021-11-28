@@ -45,15 +45,13 @@ const addTeam = async (req: Request, res: Response, next: NextFunction) => {
       } finally {
           if (conn) return conn.end();
       }
-  };
+};
 
 // updating a team
 const updateTeam = async (req: Request, res: Response, next: NextFunction) => {
     let conn: any;
     try {
         let team: any = await db.pool.query("UPDATE teams set name =?, description =?, updated_at =? WHERE id =?", [req.body.name, req.body.description, new Date, req.params.id]);
-        // console.log(team.affectedRows);
-        
         if (team.affectedRows != 1) return res.status(404).json('team not found');
         res.status(200).json("Team updated successfully");
     } catch (err) {
@@ -69,8 +67,10 @@ const deleteOneOrMayTeam = async (req: Request, res: Response, next: NextFunctio
     
     let conn: any;
       try {
-        let listTeamsIds: any = req.query.ids;
-        let listTeamsIdsToIterable = listTeamsIds.replace(/['"]+/g, '').split(',');
+        let listTeamsIds: any = req.query.ids; // get list of teams id from query params
+        let listTeamsIdsToIterable = listTeamsIds.replace(/['"]+/g, '').split(','); // create array of teams id
+        
+        // delete each team correspondents to ids
         listTeamsIdsToIterable.forEach(async (id: number) => {
             await db.pool.query("DELETE FROM teams WHERE id = ?", [id]);
         });

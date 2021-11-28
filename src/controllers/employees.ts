@@ -1,18 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import Employee from "../models/Employee";
 import db from '../utils/db';
 import employeeProcess from "../services/employees.ts/employeeProcess";
 import Team from "../models/Team";
+import Employee from "../models/Employee";
 
 // getting all employees
 const getEmployees = async (req: Request, res: Response, next: NextFunction) => {
     let conn: any;
     let processedEmployeesArray : any[] = [];
-    let processEmployee;
     try {
         let employees: [Employee] = await db.pool.query("SELECT * FROM employees");
         for (let employee of employees) { 
-            processEmployee = await employeeProcess(employee); // call employeeProcess service
+            let processEmployee = await employeeProcess(employee); // call employeeProcess service
             processedEmployeesArray.push(processEmployee);
         };
         res.status(200).json(processedEmployeesArray);
@@ -27,9 +26,8 @@ const getEmployees = async (req: Request, res: Response, next: NextFunction) => 
 const getEmployee = async (req: Request, res: Response, next: NextFunction) => {
 
     let conn: any;
-    let id: string = req.params.id;
     try {
-        let employee: [Employee] = await db.pool.query("SELECT * FROM employees where id ="+id);
+        let employee: [Employee] = await db.pool.query("SELECT * FROM employees where id ="+req.params.id);
         if (!employee.length) return res.status(404).json('employee not found');
         let processedEmployee = await employeeProcess(employee[0]); 
         res.status(200).json(processedEmployee);
@@ -45,8 +43,7 @@ const deleteEmployee = async (req: Request, res: Response, next: NextFunction) =
     
     let conn: any;
       try {
-        let employeeId: any = req.params.id;
-        await db.pool.query("DELETE FROM employees WHERE id = ?", [employeeId]);
+        await db.pool.query("DELETE FROM employees WHERE id = ?", [req.params.id]);
         res.status(200).json("Employee deleted");
       } catch (err) {
           console.log("====================+>",err);

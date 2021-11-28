@@ -11,3 +11,5 @@ build/**/*
 yarn.lock
 
 src/middlewares/.DS_Store
+
+.DS_Store
