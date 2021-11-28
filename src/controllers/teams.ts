@@ -10,6 +10,7 @@ const getTeams = async (req: Request, res: Response, next: NextFunction) => {
         res.status(200).json(teams);
     } catch (err) {
         console.log("====================+>",err);
+        res.status(503).json("Service unavailable");
     } finally {
         if (conn) return conn.end();
     }
@@ -19,13 +20,13 @@ const getTeams = async (req: Request, res: Response, next: NextFunction) => {
 const getTeam = async (req: Request, res: Response, next: NextFunction) => {
 
     let conn: any;
-    let id: string = req.params.id;
     try {
-        let team: [Team] = await db.pool.query("SELECT * FROM teams where id ="+id);
+        let team: [Team] = await db.pool.query("SELECT * FROM teams where id ="+req.params.id);
         if (!team.length) return res.status(404).json('team not found');
         res.status(200).json(team[0]);
     } catch (err) {
         console.log("====================+>",err);
+        res.status(503).json("Service unavailable");
     } finally {
         if (conn) return conn.end();
     }
@@ -36,15 +37,11 @@ const addTeam = async (req: Request, res: Response, next: NextFunction) => {
 
     let conn: any;
       try {
-          let name: String = req.body.name;
-          let description: String = req.body.description;
-          let created_at: Date = new Date;
-          let updated_at: Date = new Date;
-          let team: [Team] = await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", [name, description, created_at, updated_at]);
-          
+          let team: [Team] = await db.pool.query("INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)", [req.body.name, req.body.description, new Date, new Date]);
           res.status(201).json(team);
       } catch (err) {
           console.log("====================+>",err);
+          res.status(400).json("Bad request");
       } finally {
           if (conn) return conn.end();
       }
@@ -54,10 +51,14 @@ const addTeam = async (req: Request, res: Response, next: NextFunction) => {
 const updateTeam = async (req: Request, res: Response, next: NextFunction) => {
     let conn: any;
     try {
-        let team: [Team] = await db.pool.query("UPDATE teams set name =?, description =?, updated_at =? WHERE id =?", [req.body.name, req.body.description, new Date, req.params.id]);
-        res.status(200).json(team);
+        let team: any = await db.pool.query("UPDATE teams set name =?, description =?, updated_at =? WHERE id =?", [req.body.name, req.body.description, new Date, req.params.id]);
+        // console.log(team.affectedRows);
+        
+        if (team.affectedRows != 1) return res.status(404).json('team not found');
+        res.status(200).json("Team updated successfully");
     } catch (err) {
         console.log("====================+>",err);
+        res.status(503).json("Service unavailable");
     } finally {
         if (conn) return conn.end();
     }
@@ -70,12 +71,13 @@ const deleteOneOrMayTeam = async (req: Request, res: Response, next: NextFunctio
       try {
         let listTeamsIds: any = req.query.ids;
         let listTeamsIdsToIterable = listTeamsIds.replace(/['"]+/g, '').split(',');
-        listTeamsIdsToIterable.forEach(async (id: any) => {
+        listTeamsIdsToIterable.forEach(async (id: number) => {
             await db.pool.query("DELETE FROM teams WHERE id = ?", [id]);
         });
-        res.status(204).send();
+        res.status(200).json("Team(s) deleted");
       } catch (err) {
           console.log("====================+>",err);
+          res.status(503).json("Service unavailable");
       } finally {
           if (conn) return conn.end();
       }

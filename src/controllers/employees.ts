@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Employee from "../models/Employee";
 import db from '../utils/db';
 import employeeProcess from "../services/employees.ts/employeeProcess";
-import Team from "models/Team";
+import Team from "../models/Team";
 
 // getting all employees
 const getEmployees = async (req: Request, res: Response, next: NextFunction) => {
