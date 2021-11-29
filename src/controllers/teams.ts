@@ -41,7 +41,7 @@ const addTeam = async (req: Request, res: Response, next: NextFunction) => {
       "INSERT INTO teams (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)",
       [req.body.name, req.body.description, new Date(), new Date()]
     );
-    res.status(201).json(team);
+    res.status(201).json("Team added successfully");
   } catch (err) {
     console.log("====================+>", err);
     res.status(400).json("Bad request");

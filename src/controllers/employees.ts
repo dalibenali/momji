@@ -108,13 +108,14 @@ const updateEmployee = async (
 
     // update our employee
     await db.pool.query(
-      "UPDATE employees set firstName =?, lastName =?, email =?, address =?, team_id =?, updated_at =? WHERE id =?",
+      "UPDATE employees set firstName =?, lastName =?, email =?, address =?, team_id =?, isActive=?, updated_at =? WHERE id =?",
       [
         req.body.firstName,
         req.body.lastName,
         req.body.email,
         req.body.address,
         req.body.team_id,
+        req.body.isActive,
         new Date(),
         employee[0].id,
       ]
